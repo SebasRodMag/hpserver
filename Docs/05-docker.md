@@ -1376,27 +1376,36 @@ Docker facilita reconstruir la capa de aplicación, mientras que la estrategia d
 
 ### Docker Engine
 
-- **Docker Engine — Install on Debian**
+- **Docker Engine — Install on Debian**  
+  https://docs.docker.com/engine/install/debian/
+
   - Repositorio oficial.
   - Clave de firma.
   - Paquetes Docker CE.
   - Validación mediante `hello-world`.
 
-- **Docker Engine — Linux post-installation**
+- **Docker Engine — Linux post-installation steps**  
+  https://docs.docker.com/engine/install/linux-postinstall/
+
   - Grupo `docker`.
   - Inicio automático.
   - Consideraciones de seguridad.
+  - Privilegios equivalentes a `root` asociados al grupo `docker`.
 
 ### Docker Compose
 
-- **Docker Compose documentation**
+- **Docker Compose documentation**  
+  https://docs.docker.com/compose/
+
   - Definición de aplicaciones multi-contenedor.
   - Servicios.
   - Redes.
   - Volúmenes.
   - Variables de entorno.
 
-- **Control startup and shutdown order in Compose**
+- **Control startup and shutdown order in Compose**  
+  https://docs.docker.com/compose/how-tos/startup-order/
+
   - `depends_on`.
   - `healthcheck`.
   - `service_healthy`.
@@ -1404,31 +1413,17 @@ Docker facilita reconstruir la capa de aplicación, mientras que la estrategia d
 
 ### PostgreSQL
 
-- **PostgreSQL Official Docker Image**
+- **PostgreSQL — Docker Official Image**  
+  https://hub.docker.com/_/postgres
+
   - Variables de inicialización.
   - Persistencia.
-  - Cambios de almacenamiento en PostgreSQL 18.
+  - Configuración de `PGDATA`.
+  - Cambios introducidos en PostgreSQL 18.
 
-### Nextcloud
+  PostgreSQL 18 cambió el valor de `PGDATA` a una ruta dependiente de la versión y modificó el volumen declarado por la imagen oficial a:
 
-- **Nextcloud Docker — Official repository**
-  - Imagen Apache.
-  - PostgreSQL.
-  - Redis.
-  - Contenedor Cron.
-  - Persistencia compartida entre `app` y `cron`.
-
-### Redis
-
-- **Redis Official Docker Image**
-  - Ejecución de Redis mediante Docker.
-  - Persistencia y configuración.
-
-### Cloudflare
-
-- **cloudflared / Cloudflare Tunnel documentation**
-  - Ejecución mediante contenedor.
-  - Tokens de túnel.
-  - Conectividad hacia servicios internos.
+  ```text
+  /var/lib/postgresql
 
 > Las referencias describen el comportamiento oficial de los componentes. La arquitectura Compose, política de versiones, incidencias y procedimientos de recuperación corresponden a la implementación real de `hpserver`.
