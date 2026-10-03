@@ -174,8 +174,8 @@ La documentación completa del proyecto se encuentra en [`docs/`](docs/).
 | [08 - Seguridad y correo](docs/08-seguridad-y-correo.md) | 2FA, AppArmor, SMTP y seguridad |
 | [09 - Backup con Borg](docs/09-backup-borg.md) | Estrategia y automatización de copias |
 | [10 - Monitorización y alertas](docs/10-monitorizacion-y-alertas.md) | SMART, systemd y notificaciones |
-| [11 - Operación y mantenimiento](docs/11-operacion-y-mantenimiento.md) | Administración habitual del servidor |
-| [12 - Recuperación ante desastres](docs/12-recuperacion-desastres.md) | Procedimientos de restauración |
+| [11 - Recuperación ante desastres](docs/11-recuperacion-desastres.md) | Procedimientos de restauración |
+| [12 - Operación y mantenimiento](docs/12-operacion-y-mantenimiento.md) | Administración habitual del servidor |
 | [13 - Migración de hardware](docs/13-migracion-hardware.md) | Sustitución de discos, SSD o servidor |
 | [14 - Incidencias y lecciones](docs/14-incidencias-y-lecciones.md) | Problemas encontrados y soluciones |
 
