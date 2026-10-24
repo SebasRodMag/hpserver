@@ -164,20 +164,20 @@ La documentación completa del proyecto se encuentra en [`docs/`](docs/).
 
 | Capítulo | Contenido |
 | --- | --- |
-| [01 - Arquitectura](docs/01-arquitectura.md) | Diseño general y decisiones de arquitectura |
-| [02 - Hardware](docs/02-hardware.md) | Servidor y dispositivos de almacenamiento |
-| [03 - Debian y red](docs/03-debian-y-red.md) | Instalación, administración y configuración de red |
-| [04 - Almacenamiento](docs/04-almacenamiento.md) | Particionado, sistemas de archivos y montajes |
-| [05 - Docker](docs/05-docker.md) | Instalación y configuración de Docker |
-| [06 - Nextcloud](docs/06-nextcloud.md) | Despliegue y configuración de Nextcloud |
-| [07 - Cloudflare Tunnel](docs/07-cloudflare-tunnel.md) | Acceso remoto seguro |
-| [08 - Seguridad y correo](docs/08-seguridad-y-correo.md) | 2FA, AppArmor, SMTP y seguridad |
-| [09 - Backup con Borg](docs/09-backup-borg.md) | Estrategia y automatización de copias |
-| [10 - Monitorización y alertas](docs/10-monitorizacion-y-alertas.md) | SMART, systemd y notificaciones |
-| [11 - Recuperación ante desastres](docs/11-recuperacion-desastres.md) | Procedimientos de restauración |
-| [12 - Operación y mantenimiento](docs/12-operacion-y-mantenimiento.md) | Administración habitual del servidor |
-| [13 - Migración de hardware](docs/13-migracion-hardware.md) | Sustitución de discos, SSD o servidor |
-| [14 - Incidencias y lecciones](docs/14-incidencias-y-lecciones.md) | Problemas encontrados y soluciones |
+| [01 - Arquitectura](Docs/01-arquitectura.md) | Diseño general y decisiones de arquitectura |
+| [02 - Hardware](Docs/02-hardware.md) | Servidor y dispositivos de almacenamiento |
+| [03 - Debian y red](Docs/03-debian-y-red.md) | Instalación, administración y configuración de red |
+| [04 - Almacenamiento](Docs/04-almacenamiento.md) | Particionado, sistemas de archivos y montajes |
+| [05 - Docker](Docs/05-docker.md) | Instalación y configuración de Docker |
+| [06 - Nextcloud](Docs/06-nextcloud.md) | Despliegue y configuración de Nextcloud |
+| [07 - Cloudflare Tunnel](Docs/07-cloudflare-tunnel.md) | Acceso remoto seguro |
+| [08 - Seguridad y correo](Docs/08-seguridad-y-correo.md) | 2FA, AppArmor, SMTP y seguridad |
+| [09 - Backup con Borg](Docs/09-backup-borg.md) | Estrategia y automatización de copias |
+| [10 - Monitorización y alertas](Docs/10-monitorizacion-y-alertas.md) | SMART, systemd y notificaciones |
+| [11 - Recuperación ante desastres](Docs/11-recuperacion-desastres.md) | Procedimientos de restauración |
+| [12 - Operación y mantenimiento](Docs/12-operacion-y-mantenimiento.md) | Administración habitual del servidor |
+| [13 - Migración de hardware](Docs/13-migracion-hardware.md) | Sustitución de discos, SSD o servidor |
+| [14 - Incidencias y lecciones](Docs/14-incidencias-y-lecciones.md) | Problemas encontrados y soluciones |
 
 ---
 
