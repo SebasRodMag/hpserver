@@ -23,6 +23,7 @@ El capítulo cubre:
 -   correo y alertas;
 -   logs y diagnóstico;
 -   rutinas periódicas de mantenimiento.
+-   renovación de contraseñas y credenciales
 
 No sustituye a los capítulos especializados. El diseño del backup se
 documenta en el capítulo 9, la monitorización en el capítulo 10 y los
@@ -1438,6 +1439,182 @@ cambio.
 [ ] nuevo backup generado si procede
 [ ] documentación actualizada
 ```
+
+------------------------------------------------------------------------
+
+## 12.18 Renovación y rotación de credenciales
+
+### 12.18.1 Objetivo
+
+Establecer un procedimiento seguro para renovar contraseñas, tokens y otras credenciales utilizadas por los servicios de `hpserver`.
+
+La renovación debe realizarse cuando exista sospecha de exposición, tras un incidente de seguridad, ante cambios administrativos o como parte de una política de mantenimiento.
+
+**Principio fundamental:** modificar una credencial en un archivo de configuración no implica que se modifique automáticamente en el servicio que la utiliza.
+
+### 12.18.2 Credenciales administradas
+
+| Servicio | Credencial | Ubicación o gestión |
+|---|---|---|
+| Nextcloud | Contraseña del administrador | Base de datos de Nextcloud |
+| PostgreSQL | Contraseña del rol `nextcloud` | Roles de PostgreSQL |
+| PostgreSQL | Contraseña del rol `oc_admin` | Roles de PostgreSQL |
+| Nextcloud | Contraseña de conexión a PostgreSQL | `config/config.php` |
+| Cloudflare Tunnel | Token del conector | Cloudflare Zero Trust y `.env` |
+| SMTP y alertas | Credenciales de correo | Configuración privada correspondiente |
+
+Los archivos que contienen secretos no deben incorporarse al repositorio público.
+
+### 12.18.3 Renovación del token de Cloudflare Tunnel
+
+1. Acceder a Cloudflare Zero Trust.
+2. Seleccionar el túnel correspondiente a `nube.asrm.dev`.
+3. Ejecutar la rotación del token.
+4. Recuperar el nuevo token desde las instrucciones de instalación de un conector Docker.
+5. Actualizar `CLOUDFLARE_TUNNEL_TOKEN` en el archivo `.env`.
+
+Comprobar los permisos:
+
+```bash
+chmod 600 /srv/docker/nextcloud/.env
+```
+
+Recrear únicamente el conector:
+
+```bash
+cd /srv/docker/nextcloud
+docker compose up -d --no-deps --force-recreate cloudflared
+```
+
+Verificar:
+
+```bash
+docker compose ps cloudflared
+docker compose logs --tail=30 cloudflared
+```
+
+Confirmar que `https://nube.asrm.dev` es accesible y desconectar las sesiones antiguas del túnel cuando corresponda.
+
+### 12.18.4 Renovación de la contraseña de Nextcloud
+
+Ejecutar:
+
+```bash
+docker exec -it -u www-data nextcloud-app-1 \
+  php occ user:resetpassword sebasadmin
+```
+
+Introducir la nueva contraseña de forma interactiva.
+
+Verificar el acceso desde el navegador y mantener habilitada la autenticación multifactor.
+
+La variable `NEXTCLOUD_ADMIN_PASSWORD` se utiliza durante la instalación inicial. Modificarla no cambia la contraseña de un administrador existente.
+
+### 12.18.5 Renovación de contraseñas de PostgreSQL
+
+Antes de intervenir, comprobar la disponibilidad de una copia de seguridad recuperable.
+
+Acceder a PostgreSQL:
+
+```bash
+docker exec -it nextcloud-db-1 \
+  psql -U nextcloud -d nextcloud
+```
+
+Renovar la contraseña del rol administrativo:
+
+```sql
+\password nextcloud
+```
+
+Renovar la contraseña del usuario de aplicación:
+
+```sql
+\password oc_admin
+```
+
+Salir:
+
+```sql
+\q
+```
+
+**Importante:** el cambio de contraseña de `oc_admin` debe coordinarse con la configuración de Nextcloud. De lo contrario, la aplicación perderá temporalmente la conexión con PostgreSQL.
+
+Para intervenciones planificadas, activar previamente el modo mantenimiento y detener las tareas programadas, siempre que el servicio esté operativo.
+
+### 12.18.6 Actualización de las credenciales persistentes
+
+La configuración de Nextcloud se encuentra en:
+
+```text
+/srv/docker/nextcloud/volumes/nextcloud/config/config.php
+```
+
+Realizar una copia de seguridad protegida antes de modificarla.
+
+El parámetro relevante es:
+
+```php
+'dbpassword' => 'VALOR_PRIVADO',
+```
+
+Actualizarlo con la nueva contraseña de `oc_admin`, conservando la sintaxis PHP y los permisos del archivo.
+
+Si se utiliza un editor de texto, evitar generar archivos temporales accesibles a otros usuarios. Las contraseñas con comillas o barras invertidas requieren especial cuidado.
+
+Comprobar la sintaxis:
+
+```bash
+docker exec nextcloud-app-1 \
+  php -l /var/www/html/config/config.php
+```
+
+Comprobar la conexión:
+
+```bash
+docker exec -u www-data nextcloud-app-1 \
+  php occ status
+```
+
+Una vez validado el funcionamiento, desactivar el modo mantenimiento y recuperar las tareas programadas que se hubieran detenido.
+
+La contraseña del rol administrativo `nextcloud` también debe mantenerse sincronizada con la configuración privada de PostgreSQL utilizada por Docker, aunque `POSTGRES_PASSWORD` no modifica los roles de una base de datos ya inicializada.
+
+### 12.18.7 Verificación posterior
+
+Tras renovar las credenciales:
+
+```text
+[ ] Cloudflare Tunnel conectado
+[ ] Acceso HTTPS externo disponible
+[ ] Inicio de sesión de Nextcloud correcto
+[ ] Conexión a PostgreSQL operativa
+[ ] Lectura y escritura de archivos verificadas
+[ ] Contenedores app y cron operativos
+[ ] Modo mantenimiento desactivado
+[ ] Archivos de secretos con permisos restrictivos
+[ ] Credenciales antiguas revocadas
+[ ] Copias temporales con secretos revisadas
+[ ] Documentación y CHANGELOG actualizados
+```
+
+No publicar contraseñas, tokens ni salidas completas de comandos que puedan contenerlos, especialmente `docker compose config`, `docker inspect` y archivos de configuración privados.
+
+### 12.18.8 Actuación ante exposición accidental
+
+Si una credencial aparece en una conversación, repositorio, registro o documento compartido:
+
+1. Considerarla potencialmente comprometida.
+2. Identificar los servicios y permisos asociados.
+3. Revocarla o sustituirla con prioridad.
+4. Actualizar los consumidores de la credencial.
+5. Comprobar el funcionamiento del servicio.
+6. Revisar posibles accesos no autorizados.
+7. Retirar la credencial expuesta de los lugares donde sea posible y revisar copias o historiales.
+8. Registrar el incidente sin incluir secretos.
+
+**Una rotación correcta no termina al cambiar el valor: termina cuando el servicio funciona con la nueva credencial y la anterior ya no permite autenticarse.**
 
 ------------------------------------------------------------------------
 
